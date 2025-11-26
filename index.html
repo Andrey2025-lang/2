@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corazón Romántico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #ff6b9d;
+            text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        input {
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ff6b9d;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c94b77 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 107, 157, 0.6);
+        }
+
+        #heartDisplay {
+            font-size: 1.2em;
+            line-height: 1.6;
+            white-space: pre;
+            color: #ff6b9d;
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+            margin-top: 30px;
+            min-height: 200px;
+        }
+
+        .heart-line {
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.3em;
+            color: #ff6b9d;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(255, 107, 157, 0.7);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Formando corazón... </h1>
+        
+        <div class="input-section" id="inputSection">
+            <input type="text" id="nameInput" placeholder="Nombre de mi persona especial" maxlength="20">
+            <br>
+            <button onclick="mostrarCorazon()">Crear Corazón </button>
+        </div>
+
+        <div id="heartDisplay"></div>
+        <div id="finalMessage" class="message hidden"></div>
+    </div>
+
+    <script>
+        const heartPattern = `       @@@@@@              @@@@@@       
+    @@@@@@@@@@@@      @@@@@@@@@@@@    
+  @@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@  
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
+  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   
+   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
+     @@@@@@@@@@@@@@@@@@@@@@@@@@@      
+      @@@@@@@@@@@@@@@@@@@@@@@@@       
+        @@@@@@@@@@@@@@@@@@@@@         
+          @@@@@@@@@@@@@@@@@           
+            @@@@@@@@@@@@@             
+              @@@@@@@@@               
+                @@@@@                 
+                  @                   `;
+
+        function mostrarCorazon() {
+            const nombre = document.getElementById('nameInput').value.trim() || 'Amor';
+            const inputSection = document.getElementById('inputSection');
+            const heartDisplay = document.getElementById('heartDisplay');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            // Ocultar input
+            inputSection.classList.add('hidden');
+            
+            // Limpiar display
+            heartDisplay.innerHTML = '';
+            finalMessage.classList.add('hidden');
+            
+            const lineas = heartPattern.split('\n');
+            const letras = nombre.split('');
+            let indiceLetra = 0;
+            
+            // Animar línea por línea
+            lineas.forEach((linea, index) => {
+                setTimeout(() => {
+                    let lineaModificada = linea;
+                    
+                    // Reemplazar @ con letras del nombre
+                    if (linea.trim()) {
+                        lineaModificada = linea.replace(/@/g, () => {
+                            const letra = letras[indiceLetra % letras.length];
+                            indiceLetra++;
+                            return letra;
+                        });
+                    }
+                    
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'heart-line';
+                    lineDiv.textContent = lineaModificada;
+                    heartDisplay.appendChild(lineDiv);
+                    
+                    // Mostrar mensaje final
+                    if (index === lineas.length - 1) {
+                        setTimeout(() => {
+                            finalMessage.textContent = `Te Quiero demasiado, ${nombre}! ♥`;
+                            finalMessage.classList.remove('hidden');
+                        }, 500);
+                    }
+                }, index * 300);
+            });
+        }
+
+        // Permitir Enter para enviar
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                mostrarCorazon();
+            }
+        });
+    </script>
+</body>
+</html>
